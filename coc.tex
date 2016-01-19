@@ -1,0 +1,128 @@
+
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+\title{Assisted ROV and Dead-reckoning AUV Control of Biomimetic Underwater Vehicle U-CAT}
+
+\author{Taavi Salum\"{a}e\IEEEauthorrefmark{1}, Ahmed Chemori\IEEEauthorrefmark{2}, Keijo Kuusmik\IEEEauthorrefmark{1} and Maarja Kruusmaa\IEEEauthorrefmark{1}%
+\thanks{\IEEEauthorrefmark{1}Authors are with Centre for Biorobotics, Tallinn University of Technology, Tallinn, Estonia, {\tt\small taavi.salumae@ttu.ee}}%
+\thanks{\IEEEauthorrefmark{2}Author is with LIRMM UMR CNRS/Univ. of Montpellier, 161 rue Ada, 34392 Montpellier, France, {\tt\small ahmed.chemori@lirmm.fr}}}
+
+\maketitle
+
+\begin{abstract}
+This paper presents four different control approaches for biomimetic underwater vehicle U-CAT.
+U-CAT is a novel four-filipper robot designed for autonomous and semi-autonomous inspection of confined spaces.
+It is being developed particularly keeping in mind the requirements for archaeological shipwreck investigation tasks.
+Even though U-CAT is equipped with different navigation sensors, it is often required to use the vehicle in situations where there is no possibility to use absolute external references. 
+In this paper we concentrate on the control of the vehicle in such situations.
+We have developed and tested the following control approaches: 
+1) Fully manual ROV mode; 
+2) ROV mode with automatic depth control; 
+3) ROV mode with automatic depth and yaw control; 
+4) AUV mode with EKF-based dead-reckoning and automatic depth and yaw control. 
+Here we demonstrate the implementation and performance of these control approaches and analyse their suitability for being used in different mission scenarios.  
+\end{abstract}
+
+\IEEEpeerreviewmaketitle
+
+\section{Introduction}
+
+\begin{itemize}
+	\item Background and brief description of the U-CAT. Thorough comparison and justification with respect to other similar robots. We explain the advantages of U-CAT actuation system. For example with respect to \cite{geder2013maneuvering} and \cite{plamondon2013adaptive} the U-CAT's actuation mechanism is different. U-CAT can generate reaction in any DOF while keeping all the other forces and moments zero. In \cite{geder2013maneuvering} for example the robot can not dive or turn without surging. In \cite{plamondon2013adaptive} the robot can not sway and it can also only be used while tethered. Because of the mechanical difference our vehicle is better for maneuvering at slow speeds, but also the control approach has to be different. 
+	\item Explanation of difficulties arising from our actuation system. 
+Strong coupling between DOF's and oscillating nature makes manual control extremly difficult. 
+Therefore co-control is required. 
+Co-control has of course been done (we bring examples) many times before, but in most cases ROV's are more redundant and their degrees of freedom can be controlled independendly. We also check if there is any assisted control previously done on biomimetic vehicles.
+	\item ROV mode is not satisfying in many cases (we describe the possible scenarios) thus automated modes are also required. 
+We briefly describe the background of automatic control of AUV's (including biomimetic ones) and we show why they cant be directly adopted on U-CAT.
+\end{itemize}
+
+
+
+
+\section{U-CAT platform}
+
+\begin{itemize}
+	\item
+Technical description of the robot. 
+Actuation mechanism, available and used sensors and general system and software architecture.
+	\item
+Description of SW and HW layers included in the control to give an overview where and how the control is developed (motors, motor controllers, flipper commands, wrench driver, controller, odometry, sensors).
+We explain how the layers influence the final result.
+\end{itemize}
+
+\subsection{Dynamics}
+Description of U-CAT dynamics. In-depth description of modelling and identification will be described elsewhere.
+
+
+
+
+
+\section{Controller implementation}
+
+\subsection{Manual control}
+Controlling the tethered robot with joystick using visual feedback.
+
+\subsection{Manual control with automatic depth regulation}
+Tethered robot is controlled with joystic, but the depth is controlled automatically using model-based PID with inverse dynamics. 
+We explain that due to strong coupling in DOF actuation we propose to use continuous weight functions to give priority to different controllers depending on what the operatoror wants to do.
+
+\subsection{Manual control with automatic depth and yaw regulation}
+Automatic yaw control with IMU feedback is added to the previous case.
+We only briefly describe the implementation, tuning and selection of
+the depth and yaw controllers and all the different model-based controllers will be published elsewhere.
+
+\subsection{Automatic open-loop control}
+The surge control from joystic is replaced with automatic control based on the feedback from the robot's internal position estimation. 
+I tried to implement this part in Kuressaare, but due to limited time we decided to cancel this experiment and continue with testing new model based controllers. 
+My estimation is that the implementation of this part takes 1 day.
+Keijo has previously tested dead-reckoning with 3 to 5 degrees of freedom, but he did not use weightning between controllers and thus the robot was quite unstable (experiments in Rummu during demonstrations).
+We could also add the comparison between current and Keijos solution.In Kuressaare we tested the odometry error while controlling the robot with joystic. 
+The error in our very robust experiment was 17\%.  
+
+
+
+\section{Experimental results}
+To compare the controllers, we follow approximately 5 minute lawnmower trajectory at constant depth. For all the scenarios we plot:
+
+\begin{itemize}
+	\item
+Desired and actual depth
+	\item
+Desired and actual yaw
+	\item
+The desired and actual trajectory of the robot. 
+The actual trajectory is recorded with an overhead camera.
+\end{itemize}
+
+All the data is available for cases b) and c). The experiment has to be made for case a) to show that without any automatic control it is impossible to follow the desired trajectory. The experiment has to be made also for case d) to demonstrate that the robot is also able to follow the trajectory in fully autonomous mode, however, due to missing absolute reference there of course will be error in x/y tracking.
+
+
+\section{Discussion}
+We discuss the possible use-cases for different control approaches. We also describe how we are going to extend the work. We will include the absolute position measurements from hydrophone array and modem-based LBL into EKF to reduce the error in position measurement. Also sonar array for obstacle avoidance. 
+
+
+\section{Conclusion}
+Contribution:
+\begin{itemize}
+	\item Novel type of assisted control scheme for four-flipper robots using weighted control.
+	\item Demonstration that the control scheme can also be extended for fully-autonomous control.
+	\item Characterization of different control schemes and evaluation of their usability for different inspection tasks.
+\end{itemize}
+
+\section*{Acknowledgment}
+
+
+The authors would like to thank...
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,references}
+
+\end{document}
+
+
