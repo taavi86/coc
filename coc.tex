@@ -4,6 +4,13 @@
 \usepackage{cite}
 \hyphenation{op-tical net-works semi-conduc-tor}
 
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+%% the following commands are sometimes needed
+\usetikzlibrary{plotmarks}
+\usepackage{grffile}
+\usepackage{amsmath}
+
 
 \begin{document}
 \title{Assisted ROV and Dead-reckoning AUV Control of Biomimetic Underwater Vehicle U-CAT}
@@ -31,6 +38,28 @@ Here we demonstrate the implementation and performance of these control approach
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
+
+Autonomous (AUV's)and remotely operated underwater vehicles (ROV's) have already been in use for several decades. Their control and sensing algorithms have been greatly developing during these years, however, the general mechanical form has mainly stayed the same. One of the first known AUV's called the SPURV, whose development started in 1950s \cite{nodland1968spurv}, still looks very similar to modern widely used vehicles like Iver-2 \cite{anderson2005workhorse} or Bluefins \cite{bluefin}. Similar examples can also be brought for ROV's. Of course there is a lot of justification for these proven designs, but the problem is that the traditional vehicles can only be operated in relatively limited conditions. For example they are not well suitable for using in shallow waters, confined areas, in proximity of divers or animals or close to bottom. The limitations are mostly related to the use of propellers, but also to the large size and high cost.
+
+To develop underwater vehicles for more complex environments, several researchers have taken inspiration from different animal species. For example there exist fish robots mariculture monitoring \cite{ryuh2015school}, snake robots for amphibious missions \cite{kohl2016snake}, and even aerial-aquatic diving bird robot \cite{lock2010bird}. One class of biomimetic underwater vehicles consists of robots that use multiple actuated fins in a configuration that gives them a high maneuverability. Most of these vehicles can be classified as turtle-like robots. Turtle-like robots use 4 fins with 1 to 3 rotational degrees of freedom. One of the earliest examples is "Turtle 2005" \cite{konno2005submergence} of Kogakuin University who uses rolling and pitching fore fins for propulsion and pitching hind fins for control. The vehicle was designed to estimate the feasibility of turtle-like locomotion. The same configuration is used by the robot turtle of Nanyang Technological University with the aim to also mimick the crawling of turtles \cite{low2007turtle}. "Finnegan the RoboTurtle" \cite{licht2008finnegan} developed in MIT/WHOI uses 4 rolling and pitching fins instead of 2 giving the robot a hovering capability and improving maneuverability. To even increase the similarity to turtle, the "Naro-tartaruga" robot \cite{siegenthaler2013naro} adds additional DOF of yaw to its fore fins \cite{font2011naro}. A slightly different approach is used on the "Gen" series vehicles \cite{geder2013maneuvering} of Naval Research Laboratory. The "Gen" vehicles use active shape deformation fins \cite{geder2014fin}, which in principle create a very similar motion to other 2-DOF turtle fins. A turtle-like swimming motion is achieved also in \cite{kim2013turtle} by employing smart soft composite materials.
+
+All these turtle inspired vehicles have better maneuverability than most traditional AUV's. However, they generate thrust mostly using the roll motion of fins, giving the vehicles much better performance in surge than in other degrees of freedom. Therefore, this kind of locomotion is not optimal for missions where the vehicle has to perform equally in different degrees of freedom. For example wall-following, close-up inspection and investigation of confined spaces require the robot to be as close as possible to holonomic. Another major disadvantage of turtle-like locomotion is the complexity of multiple-DOF fin actuators. Such actuators are large and less reliable.
+
+These problems are partly solved with another class of multiple-fin underwater vehicles. This class consists of vehicles that do not try to mimick exact turtle propulsion, even though some authors still call them turtle-like robots. These robots are usually actuated by single-DOF pitching fins. Probably the most known example is the "Madeline" of Nekton research [3], which was used to show that it is more efficient to swim using only fore fins [3(1)]. The "Madeline's" commercialised successor is the IRobot "Transphibian" [5] designed for amphibian ROV missions. Very similar design to "Trahsphibian" has been used on another robot developed in the Robotics Institute of Beihang University [6]. This robot was also tested under ice on an Antarctic expedition of China. A different amphibious robot design of Peking university [18] uses fins that are actuated by two parallel motors through special five-bar link mechanism. The mechanism allows to pitch the fins for swimming, but also to use them for walking on ground. Peking University has also developed another four-fin robot with pitching and yawing fins [13]. With this configuration the robot is fully holonomic and can be in principle controlled in 6-DOF's. Of course this comes with the price of increased mechanical complexity. While all the previous vehicles use 4 fins, the Aqua vehicle of McGill University has 6 pitching fins [7]. The Aqua's fins can be used either for crawling or swimming.
+
+As the fin locomotion is different from propeller locomotion, these robots also need different methods for motion control. The main difference between control of multiple pitching fin robots and traditional highly maneuverable AUV's [] and ROV's [] is that the latter ones mostly use separate actuator for controlling every degree of freedom []. In case of multi-fin vehicles, different degrees of freedom can not be actuated directly, but have to be controlled through different combinations of fin motions. This creates strong coupling between the control of different DOF's. For example, when a vehicle is diving at full speed, its fins are pointing up. Therefore, the robot can not surge at the same time. Most of the developed vehicles do not deal with this issue. Some of them present only open-loop or manual control [2,6,13,14,18]. Popular approach is to use central pattern generators to achieve desired fin motion [6, 13, 18]. Another researchers have concentrated on the control of the vehicles in a way that different DOF's are coupled to dominant surge motion [4, 16]. In some cases they have achieved good results. For example [4] demonstrates that using unstable roll and pitch is extremely beneficial for turning during forward motion. Other articles describe the automatic position control only for 1 DOF at the same time [9,13]. In [3] 3 DOF's are simultaneously controlled. However, the authors PLEASE ADD LIMITATION OF WORK HERE. The most advanced control has been developed for the Aqua vehicles [8,19,20,21,22,23]. On Aqua combination of model-free PD and PI controllers is used to control yaw, roll, pitch and heave. Gain scheduling is used to modify the gains of these controllers depending on the surge speed [21]. Different methods have been implemented to synthesize 3D trajectories [22]. Even though authors have reported good trajectory following, this was achieved by tuning an array of 45 control parameters (9 parameters at 5 different speeds) [21 table 1]. They have tried to simplify the process by using online gain adaption algorithms [22], however the presented results show large deviations from desired attitude.
+
+In this article we demonstrate a more easily applicable method for dealing with the DOF coupling problem. The method assigns weights to different DOF controllers depending on the output of more prioritized controllers. We show the usability of our approach by developing an assisted ROV control mode for a U-CAT 4-fin vehicle. In this mode the yaw and depth are controlled automatically while surge and sway are controlled by human operator. The control action of depth and yaw controllers is depending on the strength of manual control action via weight functions. We show that using our method the vehicle can precisely track a desired lawnmower trajectory. We also demonstrate the applicability of the U-CAT vehicle with ROV-mode in real-life scenario of under-ice wreck inspection.
+
+Our approach differs from previous studies in a following way:
+
+\begin{itemize}
+
+\item  We use model-based...
+
+\end{itemize}
+
+
 
 \begin{itemize}
 	\item Background and brief description of the U-CAT. Thorough comparison and justification with respect to other similar robots. We explain the advantages of U-CAT actuation system. For example with respect to \cite{geder2013maneuvering} and \cite{plamondon2013adaptive} the U-CAT's actuation mechanism is different. U-CAT can generate reaction in any DOF while keeping all the other forces and moments zero. In \cite{geder2013maneuvering} for example the robot can not dive or turn without surging. In \cite{plamondon2013adaptive} the robot can not sway and it can also only be used while tethered. Because of the mechanical difference our vehicle is better for maneuvering at slow speeds, but also the control approach has to be different. 
@@ -100,7 +129,35 @@ The desired and actual trajectory of the robot.
 The actual trajectory is recorded with an overhead camera.
 \end{itemize}
 
-All the data is available for cases b) and c). The experiment has to be made for case a) to show that without any automatic control it is impossible to follow the desired trajectory. The experiment has to be made also for case d) to demonstrate that the robot is also able to follow the trajectory in fully autonomous mode, however, due to missing absolute reference there of course will be error in x/y tracking.
+All the data is available for cases b) and c). The experiment has to be made for case a) to show that without any automatic control it is impossible to follow the desired trajectory. The experiment has to be made also for case d) to demonstrate that the robot is also able to follow the trajectory in fully autonomous mode, however, due to missing absolute reference there of course will be error in x/y tracking..
+
+
+\begin{figure} 
+	\centering 
+	\input{img/autodepthyawplot/autodepthyawplot.tex} 
+	\caption{Automatic control of depth and yaw during lawnmower trajectory} \label{fig:autodepthyawplot} 
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.0in]{img/autodepthyawtrajectory/autodepthyaw.pdf}
+\caption{Lawnmower trajectory with automatic depth and yaw control.}
+\label{autodepthyawtrajectory}
+\end{figure}
+
+\begin{figure} 
+	\centering 
+	\input{img/autodepthplot/autodepthplot.tex} 
+	\caption{Automatic control of depth during lawnmower trajectory} \label{fig:autodepthplot} 
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.0in]{img/autodepthtrajectory/autodepth.pdf}
+\caption{Lawnmower trajectory with automatic depth control.}
+\label{autodepthtrajectory}
+\end{figure}
+
 
 
 \section{Discussion}
